@@ -1,0 +1,38 @@
+{
+  "name": "koralab-handle-resolver",
+  "version": "0.0.0",
+  "description": "Ada Handles' Address Resolver",
+  "engines": {
+    "node": ">=18.18",
+    "npm": ">=10.5"
+  },
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx tsx ./src/index.ts",
+    "start:forever": "npx pm2 start ecosystem.config.cjs",
+    "stop:forever": "npx pm2 stop all",
+    "delete:forever": "npx pm2 delete all",
+    "log": "npx pm2 log resolver"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@blockfrost/blockfrost-js": "^5.5.0",
+    "@koralabs/kora-labs-common": "^4.4.9",
+    "axios": "^1.7.7",
+    "flatted": "^3.3.1",
+    "lodash": "^4.17.21",
+    "p-limit": "^6.1.0",
+    "pm2": "^5.4.2",
+    "ts-res": "^1.1.1",
+    "tsx": "^4.19.0"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.17.7",
+    "@types/node": "^22.5.4",
+    "dotenv": "^16.4.5",
+    "typescript": "^5.5.4"
+  }
+}
