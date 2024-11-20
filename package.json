@@ -20,7 +20,7 @@
   "license": "ISC",
   "dependencies": {
     "@blockfrost/blockfrost-js": "^5.5.0",
-    "@koralabs/kora-labs-common": "^4.4.9",
+    "@koralabs/kora-labs-common": "^5.1.16",
     "axios": "^1.7.7",
     "flatted": "^3.3.1",
     "lodash": "^4.17.21",
