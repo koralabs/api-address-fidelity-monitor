@@ -10,6 +10,9 @@ interface HandleInResponse {
   resolved_addresses: { ada: string };
 }
 
+const koraUserAgent = process.env.KORA_USER_AGENT!;
+const handleMeApiKey = process.env.HANDLE_ME_API_KEY!;
+
 const fetchAllHandleNames = async (): Promise<Result<string[], string>> => {
   const myHeaders = new Headers();
   myHeaders.append('Content-Type', 'text/plain');
@@ -36,17 +39,28 @@ const fetchHandle = async (
 ): Promise<Result<Handle, string>> => {
   const requestOptions: RequestInit = {
     method: 'GET',
+    headers: {
+      'User-Agent': koraUserAgent,
+      'api-key': handleMeApiKey,
+    },
   };
 
   try {
-    const result = (await (
-      await fetch(`https://api.handle.me/handles/${handleName}`)
-    ).json()) as HandleInResponse;
-    return Ok({
-      name: result.name,
-      hex: result.hex,
-      resolvedAddress: result?.resolved_addresses?.ada || '',
-    });
+    const result = await fetch(
+      `https://api.handle.me/handles/${handleName}`,
+      requestOptions
+    );
+
+    if (result.ok) {
+      const data = (await result.json()) as HandleInResponse;
+      return Ok({
+        name: data.name,
+        hex: data.hex,
+        resolvedAddress: data?.resolved_addresses?.ada || '',
+      });
+    } else {
+      return Err(result.statusText);
+    }
   } catch (err) {
     return Err(convertError(err));
   }
@@ -58,23 +72,30 @@ const fetchHandles = async (
 ): Promise<Result<Handle[], string>> => {
   const requestOptions: RequestInit = {
     method: 'GET',
+    headers: {
+      'User-Agent': koraUserAgent,
+      'api-key': handleMeApiKey,
+    },
   };
 
   try {
-    const result = (await (
-      await fetch(
-        `https://api.handle.me/handles?page=${Math.floor(
-          page
-        )}&records_per_page=${Math.floor(recordsPerPage)}`,
-        requestOptions
-      )
-    ).json()) as HandleInResponse[];
-    const data = result.map((handle) => ({
-      name: handle.name,
-      hex: handle.hex,
-      resolvedAddress: handle?.resolved_addresses?.ada || '',
-    }));
-    return Ok(data);
+    const result = await fetch(
+      `https://api.handle.me/handles?page=${Math.floor(
+        page
+      )}&records_per_page=${Math.floor(recordsPerPage)}`,
+      requestOptions
+    );
+    if (result.ok) {
+      const data = (await result.json()) as HandleInResponse[];
+      const handles = data.map((handle) => ({
+        name: handle.name,
+        hex: handle.hex,
+        resolvedAddress: handle?.resolved_addresses?.ada || '',
+      }));
+      return Ok(handles);
+    } else {
+      return Err(result.statusText);
+    }
   } catch (err) {
     return Err(convertError(err));
   }

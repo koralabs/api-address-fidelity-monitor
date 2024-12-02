@@ -126,10 +126,10 @@ const main = async (): Promise<Result<Status, string>> => {
     }
 
     const handlesTotalCount = allHandleNamesResult.data.length;
-    const asyncEachTime = Math.floor(
-      (oneDayInMilliseconds / Math.max(1, handlesTotalCount)) * parallel
-    );
     const parallelCount = Math.ceil(handlesTotalCount / parallel);
+    const asyncEachTime = Math.floor(
+      oneDayInMilliseconds / Math.max(1, parallelCount)
+    );
 
     Logger.log({
       message: `Resolve ${parallel} Handles every ${asyncEachTime} ms`,
