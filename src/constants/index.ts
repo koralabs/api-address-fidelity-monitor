@@ -1,5 +1,5 @@
 import { config as envConfig } from 'dotenv';
-envConfig({ path: `.env.${process.env.NODE_ENV || 'development'}.local` });
+envConfig();
 
 export const {
   KORA_USER_AGENT = '',

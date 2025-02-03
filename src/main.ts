@@ -100,6 +100,7 @@ const resolvePerPage = async (page: number): Promise<void> => {
   }
 
   const resolvedHandles = resolvedHandlesResult.data;
+  console.log(`Page ${page} handles are resolved`);
 
   resolvedHandles.forEach(checkResolvedHandle);
 };
