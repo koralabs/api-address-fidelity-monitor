@@ -1,6 +1,7 @@
 import { config } from 'dotenv';
 import { Err, Ok, Result } from 'ts-res';
 
+import { KOIOS_API_TOKEN } from './constants/index.js';
 import { convertError } from './error/index.js';
 import { KoiosProvider } from './koios.js';
 import { Handle, ResolvedHandle } from './types.js';
@@ -9,9 +10,8 @@ config();
 
 const HANDLE_POLICY_ID =
   'f0ff48bbb7bbe9d59a40f1ce90e9e9d0ff5002ec48f232b49ca0fb9a';
-const koiosApiToken = process.env.KOIOS_API_TOKEN!;
 
-const koios = new KoiosProvider(koiosApiToken, 'Mainnet');
+const koios = new KoiosProvider(KOIOS_API_TOKEN, 'Mainnet');
 
 const resolveHandle = async (
   handle: Handle

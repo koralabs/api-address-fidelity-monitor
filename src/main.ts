@@ -1,18 +1,18 @@
 import { asyncForEach, LogCategory, Logger } from '@koralabs/kora-labs-common';
-import { Ok, Result } from 'ts-res';
 import _ from 'lodash';
+import { Ok, Result } from 'ts-res';
+import { ResolvedHandle } from 'types.js';
 
 import { Status } from './entrypoint.js';
 import { fetchAllHandleNames, fetchHandle, fetchHandles } from './handles.js';
 import { Monitor } from './monitor.js';
 import { resolveHandle, resolveHandles } from './resolve.js';
-import { ResolvedHandle } from 'types.js';
 
 /// constants
 const oneDayInMilliseconds = 86400000;
 const parallel = 5;
 const thresholdTime = 60 * 1000; /// 60 seconds
-const checkQueueInterval = 5 * 1000; /// 30 seconds
+const checkQueueInterval = 30 * 1000; /// 30 seconds
 
 /// queue
 const queues: ResolvedHandle[] = [];

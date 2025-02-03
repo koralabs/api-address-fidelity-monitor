@@ -1,5 +1,6 @@
 import { Err, Ok, Result } from 'ts-res';
 
+import { HANDLE_ME_API_KEY, KORA_USER_AGENT } from './constants/index.js';
 import { convertError } from './error/index.js';
 import { Handle } from './types.js';
 
@@ -9,9 +10,6 @@ interface HandleInResponse {
   holder: string;
   resolved_addresses: { ada: string };
 }
-
-const koraUserAgent = process.env.KORA_USER_AGENT!;
-const handleMeApiKey = process.env.HANDLE_ME_API_KEY!;
 
 const fetchAllHandleNames = async (): Promise<Result<string[], string>> => {
   const myHeaders = new Headers();
@@ -40,8 +38,8 @@ const fetchHandle = async (
   const requestOptions: RequestInit = {
     method: 'GET',
     headers: {
-      'User-Agent': koraUserAgent,
-      'api-key': handleMeApiKey,
+      'User-Agent': KORA_USER_AGENT,
+      'api-key': HANDLE_ME_API_KEY,
     },
   };
 
@@ -73,8 +71,8 @@ const fetchHandles = async (
   const requestOptions: RequestInit = {
     method: 'GET',
     headers: {
-      'User-Agent': koraUserAgent,
-      'api-key': handleMeApiKey,
+      'User-Agent': KORA_USER_AGENT,
+      'api-key': HANDLE_ME_API_KEY,
     },
   };
 
