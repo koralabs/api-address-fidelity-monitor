@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
-import { Network } from './types.js';
 import { AssetUTxO } from 'provider/koios/types.js';
+
+import { Network } from './types.js';
 
 class KoiosProvider {
   private _apiToken: string;
