@@ -11,5 +11,3 @@ CANONICAL_CONTRACT.md
 # C1 the comparison itself
 src/monitor.ts
 src/resolve.ts
-src/koios.ts
-src/handles.ts
