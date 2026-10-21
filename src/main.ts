@@ -40,7 +40,7 @@ const checkResolvedHandle = (resolvedHandle: ResolvedHandle) => {
 };
 
 const checkQueue = async () => {
-  if (queues.length > 0 && queues[0].blockTime + thresholdTime < Date.now()) {
+  if (queues.length > 0 && queues[0].blockTime + thresholdTime <= Date.now()) {
     const oldest = queues.shift();
     if (!oldest) return;
     const { name } = oldest;
@@ -150,4 +150,5 @@ const main = async (): Promise<Result<Status, string>> => {
   return Ok(Status.Success);
 };
 
+export { checkQueue, checkResolvedHandle };
 export default main;
