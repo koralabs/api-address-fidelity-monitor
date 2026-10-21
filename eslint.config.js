@@ -24,6 +24,7 @@ export default [
     },
   },
   { languageOptions: { globals: globals.browser } },
+  { files: ["**/*.cjs"], languageOptions: { globals: globals.node } },
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
 ];

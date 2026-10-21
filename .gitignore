@@ -135,3 +135,4 @@ build/
 docs/
 aiken.lock
 plutus.json
+/tmp/
