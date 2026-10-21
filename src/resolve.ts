@@ -33,7 +33,7 @@ const resolveHandle = async (
       oldResolvedAddress: resolvedAddress,
       newResolvedAddress: foundAssetUtxo?.address || '',
       blockHeight: foundAssetUtxo?.block_height || 0,
-      blockTime: foundAssetUtxo?.block_time || Date.now(),
+      blockTime: foundAssetUtxo?.blockTime ?? Date.now(),
     });
   } catch (err) {
     return Err(convertError(err));
@@ -61,7 +61,7 @@ const resolveHandles = async (
         oldResolvedAddress: resolvedAddress,
         newResolvedAddress: foundAssetUtxo?.address || '',
         blockHeight: foundAssetUtxo?.block_height || 0,
-        blockTime: foundAssetUtxo?.block_time || Date.now(),
+        blockTime: foundAssetUtxo?.blockTime ?? Date.now(),
       };
     });
     return Ok(resolvedHandles);

@@ -1,76 +1,23 @@
 import assert from 'node:assert/strict';
 import { after, afterEach, mock, test } from 'node:test';
 
-import axios from 'axios';
+import {
+  ALPHA, assertQuery as assertTransportQuery, BETA, expected, MISSING,
+  offlineTransport, utxo,
+} from './support/offline.mjs';
 
-// Replace only Axios's HTTP transport, before the real KoiosProvider creates its
-// client. The resolver, provider, request interceptor and Axios transforms all run.
-// No socket, provider response recording, wallet, signing key or live fixture.
-const originalAdapter = axios.defaults.adapter;
-const requests = [];
-const replies = [];
-axios.defaults.adapter = async (config) => {
-  requests.push({
-    method: config.method,
-    baseURL: config.baseURL,
-    url: config.url,
-    body: JSON.parse(config.data),
-  });
-  const reply = replies.shift();
-  assert.ok(reply, 'Every HTTP request must have an explicit offline reply');
-  return reply(config);
-};
+const transport = offlineTransport();
+const { requests, respond, fail } = transport;
+const assertQuery = (names) => assertTransportQuery(requests, names);
 const { resolveHandle, resolveHandles } = await import('../src/resolve.ts');
-
-after(() => { axios.defaults.adapter = originalAdapter; });
-afterEach(() => {
-  mock.restoreAll();
-  assert.equal(replies.length, 0, 'The resolver must consume its expected request');
-  requests.length = 0;
-  replies.length = 0;
-});
-
-const POLICY = 'f0ff48bbb7bbe9d59a40f1ce90e9e9d0ff5002ec48f232b49ca0fb9a';
-const ALPHA = { name: 'unit-alpha', hex: '756e69742d616c706861', resolvedAddress: 'old-alpha' };
-const BETA = { name: 'unit-beta', hex: '756e69742d62657461', resolvedAddress: 'old-beta' };
-const MISSING = { name: 'unit-missing', hex: '756e69742d6d697373696e67', resolvedAddress: 'old-missing' };
-
-// Synthetic Koios DTOs, not chain-resident assets or live provider fixtures.
-function utxo(hex, address, overrides = {}) {
-  return {
-    tx_hash: 'ab'.repeat(32), tx_index: 0, address, value: '2000000',
-    stake_address: null, payment_cred: null, epoch_no: 500,
-    block_height: 12345, block_time: 1700000000,
-    datum_hash: null, inline_datum: null, reference_script: null,
-    asset_list: [{ policy_id: POLICY, asset_name: hex, finger_print: 'synthetic', decimals: 0, quantity: '1' }],
-    is_spent: false,
-    ...overrides,
-  };
-}
-function respond(data) {
-  replies.push((config) => ({ data, status: 200, statusText: 'OK', headers: {}, config }));
-}
-function fail(message) {
-  replies.push(() => { throw new Error(message); });
-}
-function expected(handle, address, overrides = {}) {
-  return {
-    name: handle.name, hex: handle.hex, oldResolvedAddress: handle.resolvedAddress,
-    newResolvedAddress: address, blockHeight: 12345, blockTime: 1700000000,
-    ...overrides,
-  };
-}
-function assertQuery(assetNames) {
-  assert.deepEqual(requests, [{
-    method: 'post', baseURL: 'https://api.koios.rest/api/v1', url: '/asset_utxos',
-    body: { _asset_list: assetNames.map((hex) => [POLICY, hex]), _extended: true },
-  }]);
-}
+after(() => transport.restore());
+afterEach(() => { mock.restoreAll(); transport.reset(); });
 
 // Feature: a changed owner is resolved by BOTH policy and asset name, preserving
 // the old API address for comparison. Failure: first-output, policy-only or
 // name-only selection assigns another asset's owner. Each weakened predicate or
 // deleting either policy/hex half of the request makes these assertions fail.
+// Koios wire seconds must also become the documented internal milliseconds.
 test('single resolution selects the exact asset, not an unrelated output', async () => {
   respond([
     utxo(ALPHA.hex, 'wrong-policy', { asset_list: [{ policy_id: 'ff'.repeat(28), asset_name: ALPHA.hex }] }),
@@ -122,7 +69,7 @@ test('batch resolution matches each asset independently and preserves input orde
   assert.deepEqual(result.data, [
     expected(ALPHA, 'new-alpha'),
     expected(MISSING, '', { blockHeight: 0, blockTime: 1800000000456 }),
-    expected(BETA, 'new-beta', { blockHeight: 23456, blockTime: 1700000010 }),
+    expected(BETA, 'new-beta', { blockHeight: 23456, blockTime: 1700000010000 }),
   ]);
   assertQuery([ALPHA.hex, MISSING.hex, BETA.hex]);
 });
@@ -136,6 +83,18 @@ test('an empty batch has an empty query and result', async () => {
   assert.equal(result.ok, true);
   assert.deepEqual(result.data, []);
   assertQuery([]);
+});
+
+// Feature: epoch zero is a valid seconds value, not an absent timestamp. Failure:
+// truthy/magnitude guessing replaces it with Date.now. Restoring || instead of
+// the missing-only ?? fallback makes this exact output fail.
+test('provider epoch zero stays zero milliseconds instead of using the missing-asset clock', async () => {
+  mock.method(Date, 'now', () => 1800000000123);
+  respond([utxo(ALPHA.hex, 'new-alpha', { block_time: 0 })]);
+  const result = await resolveHandle(ALPHA);
+  assert.equal(result.ok, true);
+  assert.deepEqual(result.data, expected(ALPHA, 'new-alpha', { blockTime: 0 }));
+  assertQuery([ALPHA.hex]);
 });
 
 // Feature: a provider outage is an error with its actionable reason, not a
@@ -156,7 +115,9 @@ for (const [label, run, names] of [
 
 // Feature: malformed provider output fails the resolution instead of producing
 // plausible owner addresses. Failure: accepting a non-array as empty success.
-// Returning Ok([]/empty address) on this schema error makes these tests fail.
+// Normalization now rejects this shape at the provider's map, before resolver
+// matching; retain the exact error assertion at that earlier boundary. Returning
+// Ok([]/empty address) on this schema error still makes these tests fail.
 for (const [label, run, names] of [
   ['single', () => resolveHandle(ALPHA), [ALPHA.hex]],
   ['batch', () => resolveHandles([ALPHA]), [ALPHA.hex]],
@@ -165,7 +126,7 @@ for (const [label, run, names] of [
     respond({ unexpected: 'not an asset list' });
     const result = await run();
     assert.equal(result.ok, false);
-    assert.equal(result.error, 'assetUtxos.find is not a function');
+    assert.equal(result.error, 'result.data.map is not a function');
     assertQuery(names);
   });
 }

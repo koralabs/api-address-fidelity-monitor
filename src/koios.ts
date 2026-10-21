@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
-import { AssetUTxO } from 'provider/koios/types.js';
+import { AssetUTxO, KoiosAssetUTxO } from 'provider/koios/types.js';
 
 import { Network } from './types.js';
 
@@ -15,7 +15,7 @@ class KoiosProvider {
   }
 
   assetUTxOs = async (assetIds: string[]): Promise<AssetUTxO[]> => {
-    const result = await this._axiosInstance.post<AssetUTxO[]>(
+    const result = await this._axiosInstance.post<KoiosAssetUTxO[]>(
       '/asset_utxos',
       {
         _asset_list: assetIds.map((assetId) => [
@@ -31,7 +31,10 @@ class KoiosProvider {
         },
       }
     );
-    return result.data;
+    return result.data.map(({ block_time, ...utxo }) => ({
+      ...utxo,
+      blockTime: block_time * 1000,
+    }));
   };
 }
 
