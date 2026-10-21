@@ -13,7 +13,8 @@
     "start:forever": "npx pm2 start ecosystem.config.cjs",
     "stop:forever": "npx pm2 stop all",
     "delete:forever": "npx pm2 delete all",
-    "log": "npx pm2 log resolver"
+    "log": "npx pm2 log resolver",
+    "test": "cd test && node --import tsx --test *.test.mjs"
   },
   "keywords": [],
   "author": "",
