@@ -1,9 +1,8 @@
 # Pull request checks
 
-Every pull request and default-branch push runs two independent required checks on Node 22:
+Every pull request and default-branch push retains the **Install, lint and typecheck** check on Node 22: frozen pnpm install, ESLint, and TypeScript no-emit compilation.
 
-- **Install, lint and typecheck**: the existing frozen pnpm install, ESLint and TypeScript no-emit compilation.
-- **Address resolution unit tests**: frozen installation and `pnpm test`, using the built-in Node test runner with the existing tsx dependency. No new dependency or weakened lint/typecheck rule is needed.
+The **Address resolution unit tests** check is retired. Tests and coverage run locally only, never in GitHub Actions or through indirect lifecycle/composite/template/shared-helper calls. Run `pnpm test` locally with the built-in Node test runner and existing tsx dependency. No dependency or lint/typecheck rule is weakened.
 
 The monitor entrypoint and indefinite loop/intervals are never started by tests. No credentials, live provider recordings, wallet/signing/on-chain calls, browser/e2e journeys or deployments are used. The test command runs from the test directory so production dotenv calls do not read a root operator .env file.
 
