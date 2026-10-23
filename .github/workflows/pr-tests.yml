@@ -1,6 +1,8 @@
 name: Pull request checks
 on:
   pull_request:
+  push:
+    branches: [master]
 permissions:
   contents: read
 jobs:
@@ -19,3 +21,18 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec eslint .
       - run: pnpm exec tsc --noEmit
+  unit:
+    name: Address resolution unit tests
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - run: pnpm test

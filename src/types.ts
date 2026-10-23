@@ -18,6 +18,7 @@ interface ResolvedHandle {
   oldResolvedAddress: string;
   newResolvedAddress: string;
   blockHeight: number;
+  /** Unix milliseconds, including the Date.now() value used for a missing asset. */
   blockTime: number;
 }
 

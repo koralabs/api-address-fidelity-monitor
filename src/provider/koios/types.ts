@@ -1,4 +1,4 @@
-interface AssetUTxO {
+interface KoiosAssetUTxO {
   tx_hash: string;
   tx_index: number;
   address: string;
@@ -7,6 +7,7 @@ interface AssetUTxO {
   payment_cred: string | null;
   epoch_no: number;
   block_height: number | null;
+  /** Unix seconds from Koios asset_utxos (EXTRACT(EPOCH FROM block.time)). */
   block_time: number;
   datum_hash: string | null;
   inline_datum: { bytes: string; value: object } | null;
@@ -29,4 +30,7 @@ interface AssetUTxO {
   is_spent: boolean;
 }
 
-export { AssetUTxO };
+/** Internal provider result: block time is always Unix milliseconds. */
+type AssetUTxO = Omit<KoiosAssetUTxO, 'block_time'> & { blockTime: number };
+
+export type { AssetUTxO, KoiosAssetUTxO };
