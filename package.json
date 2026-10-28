@@ -42,7 +42,8 @@
   },
   "pnpm": {
     "overrides": {
-      "pm2>js-yaml": "^4.3.2"
+      "pm2>js-yaml": "^4.3.2",
+      "basic-ftp": "^6.2.3"
     }
   }
 }
