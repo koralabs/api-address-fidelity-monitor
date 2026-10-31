@@ -1,0 +1,16 @@
+# api-address-fidelity-monitor enclave. Exact repo-root-relative paths; no wildcards, no directory prefixes.
+# A PR touching any of these that merges into master needs operator approval. Why each is here: CANONICAL_CONTRACT.md.
+.enclave
+CANONICAL_CONTRACT.md
+
+# the comparison and the report decision
+src/main.ts
+src/resolve.ts
+
+# where the two sides of the comparison come from (chain via Koios, the api via api.handle.me)
+src/koios.ts
+src/handles.ts
+
+# the tests that pin the time unit, the grace window and the report events
+test/resolve.test.mjs
+test/queue.test.mjs
