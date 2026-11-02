@@ -14,8 +14,8 @@ importers:
   .:
     dependencies:
       '@koralabs/kora-labs-common':
-        specifier: ^5.1.24
-        version: 5.1.24
+        specifier: ^6.21.6
+        version: 6.21.6
       axios:
         specifier: ^1.7.9
         version: 1.21.0
@@ -299,8 +299,34 @@ packages:
   '@isaacs/nonrecursive-glob-match@1.0.3':
     resolution: {integrity: sha512-SI7kyKHq4XXDRozw+r9GlRZkia1ZkFrpLW98r2IC2Bpr8YkFGE3fvjzmxCG0x78A++69HmDNrDvSMYBZmHGpKA==}
 
-  '@koralabs/kora-labs-common@5.1.24':
-    resolution: {integrity: sha512-wAZT1QB/kkT/Ceb/mh4/w6yGrMeaPhmubgliB5uxnlVO2xY+/0yjZFfbSvC2kYTOxoNrWgE2NPXKoW4GDsgRJQ==}
+  '@koralabs/kora-labs-common@6.21.6':
+    resolution: {integrity: sha512-gIOIUPbF1ftRy9H2+TWJlRIV4MPQDfLdk8uOyCsj30pwyPEtiNPkqDeZNqhxyi3oi7E5DtXEmTNAoaZo/E5RxQ==}
+    peerDependencies:
+      '@aiken-lang/merkle-patricia-forestry': ^1.2.0
+      '@cardano-sdk/core': ^0.46.12 || ^0.47.0
+      '@cardano-sdk/crypto': ^0.4.5
+      '@emurgo/cardano-message-signing-nodejs': ^1.1.0
+      '@playwright/test': ^1.50.0
+      bip39: ^3.0.4
+      cassandra-driver: ^4.9.0
+      scalus: ^0.15.0 || ^1.0.0
+    peerDependenciesMeta:
+      '@aiken-lang/merkle-patricia-forestry':
+        optional: true
+      '@cardano-sdk/core':
+        optional: true
+      '@cardano-sdk/crypto':
+        optional: true
+      '@emurgo/cardano-message-signing-nodejs':
+        optional: true
+      '@playwright/test':
+        optional: true
+      bip39:
+        optional: true
+      cassandra-driver:
+        optional: true
+      scalus:
+        optional: true
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -772,6 +798,9 @@ packages:
   isexe@2.0.0:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
 
+  js-md5@0.8.3:
+    resolution: {integrity: sha512-qR0HB5uP6wCuRMrWPTrkMaev7MJZwJuuw4fnwAzRgP4J4/F8RwtodOKpGp4XpqsLBFzzgqIO42efFAyz2Et6KQ==}
+
   js-yaml@4.3.2:
     resolution: {integrity: sha512-SFNOvSJ+Dgf/9An904Yx+CgSlIPCkIpao4qo51lpee25TIRejdH3rhR4EZMGoNx3/TP3O+wzWuiTFl4sqbltzA==}
     hasBin: true
@@ -794,6 +823,12 @@ packages:
   levn@0.4.1:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
     engines: {node: '>= 0.8.0'}
+
+  libsodium-sumo@0.8.4:
+    resolution: {integrity: sha512-TMtHShQfVVsaxDygyapvUC3o7YsPgXa/hRWeIgzyFz6w5k/1hirGptCxp1U7XwW3rCskaTTYKgV10v86UiGgNw==}
+
+  libsodium-wrappers-sumo@0.8.4:
+    resolution: {integrity: sha512-ql7hcgulKZ3ekfa2DGAogcCKsWU0diA/0nArz1CFzh93WQdb46/Kj18ka/Hifq6uA3Ush34Pc6vU/6HXeRwUkg==}
 
   locate-path@6.0.0:
     resolution: {integrity: sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==}
@@ -1180,7 +1215,7 @@ snapshots:
 
   '@isaacs/nonrecursive-glob-match@1.0.3': {}
 
-  '@koralabs/kora-labs-common@5.1.24':
+  '@koralabs/kora-labs-common@6.21.6':
     dependencies:
       bech32: 2.0.0
       blakejs: 1.2.1
@@ -1188,6 +1223,8 @@ snapshots:
       bs58: 6.0.0
       cbor: 9.0.2
       crc: 4.3.2
+      js-md5: 0.8.3
+      libsodium-wrappers-sumo: 0.8.4
       pluralize-esm: 9.0.5
     transitivePeerDependencies:
       - buffer
@@ -1715,6 +1752,8 @@ snapshots:
 
   isexe@2.0.0: {}
 
+  js-md5@0.8.3: {}
+
   js-yaml@4.3.2:
     dependencies:
       argparse: 2.0.1
@@ -1735,6 +1774,12 @@ snapshots:
     dependencies:
       prelude-ls: 1.2.1
       type-check: 0.4.0
+
+  libsodium-sumo@0.8.4: {}
+
+  libsodium-wrappers-sumo@0.8.4:
+    dependencies:
+      libsodium-sumo: 0.8.4
 
   locate-path@6.0.0:
     dependencies:
