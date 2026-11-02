@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "Ada Handles' Address Resolver",
   "engines": {
-    "node": ">=18.18",
+    "node": ">=26",
     "npm": ">=10.5"
   },
   "type": "module",
