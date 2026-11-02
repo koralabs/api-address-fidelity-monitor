@@ -16,8 +16,7 @@ jobs:
           version: 9.15.5
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: pnpm
+          node-version: '26'          cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec eslint .
       - run: pnpm exec tsc --noEmit
@@ -32,7 +31,6 @@ jobs:
           version: 9.15.5
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: pnpm
+          node-version: '26'          cache: pnpm
       - run: pnpm install --frozen-lockfile --ignore-scripts
       - run: pnpm test
